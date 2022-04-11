@@ -12,11 +12,12 @@ class AboutCanadaScreen extends StatefulWidget {
   const AboutCanadaScreen({Key? key}) : super(key: key);
 
   @override
-  State<AboutCanadaScreen> createState() => _AboutCanadaScreenState();
+  State<AboutCanadaScreen> createState() => AboutCanadaScreenState();
 }
 
-class _AboutCanadaScreenState extends State<AboutCanadaScreen> {
+class AboutCanadaScreenState extends State<AboutCanadaScreen> {
   late AboutCanadaViewModel AboutCanadaVM;
+  LoadingStatus loadingStatus = LoadingStatus.WAITING;
 
   @override
   void initState() {
@@ -29,8 +30,9 @@ class _AboutCanadaScreenState extends State<AboutCanadaScreen> {
   Widget build(BuildContext context) {
     final AboutCanadaVM =
         Provider.of<AboutCanadaViewModel>(context, listen: true);
+    loadingStatus = AboutCanadaVM.loadingStatus;
 
-    if (AboutCanadaVM.loadingStatus == LoadingStatus.WAITING) {
+    if (loadingStatus == LoadingStatus.WAITING) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -101,9 +103,13 @@ class _AboutCanadaScreenState extends State<AboutCanadaScreen> {
                       !AboutCanadaVM.isImageValid(index))
                   ? Container()
                   : 8.horizontalSpace,
-              Text(
-                AboutCanadaVM.rowTitle(index) ?? '',
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  AboutCanadaVM.rowTitle(index) ?? '',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+                ),
               )
             ],
           ),
