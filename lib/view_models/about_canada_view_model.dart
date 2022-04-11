@@ -34,5 +34,7 @@ class AboutCanadaViewModel extends ChangeNotifier {
   String? rowDescription(int index) => _listAboutCanada[index].description;
   String? rowImage(int index) => _listAboutCanada[index].imageHref;
 
+  bool isImageValid(int index) => _listAboutCanada[index].imagevalid;
+
   int get length => _listAboutCanada.length;
 }

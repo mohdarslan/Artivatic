@@ -2,6 +2,7 @@
 
 import 'package:artivatic/enums.dart';
 import 'package:artivatic/view_models/about_canada_view_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _AboutCanadaScreenState extends State<AboutCanadaScreen> {
         ],
       );
     } else if (AboutCanadaVM.loadingStatus == LoadingStatus.ERROR) {
-      return Container(
+      return Center(
         child: Text('Some Error Occured'),
       );
     }
@@ -83,19 +84,23 @@ class _AboutCanadaScreenState extends State<AboutCanadaScreen> {
         children: [
           Row(
             children: [
-              AboutCanadaVM.rowImage(index) == null
+              (AboutCanadaVM.rowImage(index) == null ||
+                      !AboutCanadaVM.isImageValid(index))
                   ? Container()
                   : Container(
                       height: 64.h,
                       width: 64.h,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            AboutCanadaVM.rowImage(index)!,
-                          ),
-                        ),
-                      )),
-              8.horizontalSpace,
+                      child: CachedNetworkImage(
+                        imageUrl: AboutCanadaVM.rowImage(index)!,
+                        progressIndicatorBuilder: (_, __, ___) =>
+                            LinearProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                    ),
+              (AboutCanadaVM.rowImage(index) == null ||
+                      !AboutCanadaVM.isImageValid(index))
+                  ? Container()
+                  : 8.horizontalSpace,
               Text(
                 AboutCanadaVM.rowTitle(index) ?? '',
                 style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),

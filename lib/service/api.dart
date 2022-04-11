@@ -13,11 +13,37 @@ class API {
       Map responseMap = jsonDecode(response.body);
 
       setTitle(title: responseMap['title']);
-      return responseMap['rows']
-          .map<AboutCanada>((e) => AboutCanada.fromJson(e))
-          .toList();
+      List<AboutCanada> _listAboutCanada = [];
+      for (int i = 0; i < responseMap['rows'].length; i++) {
+        bool imagevalid =
+            await validateImage(responseMap['rows'][i]['imageHref']);
+        _listAboutCanada
+            .add(AboutCanada.fromJson(responseMap['rows'][i], imagevalid));
+      }
+      return _listAboutCanada;
     } else {
       throw Exception('Error getting data');
     }
+  }
+
+  static Future<bool> validateImage(String? imageUrl) async {
+    http.Response res;
+    if (imageUrl == null) return false;
+    try {
+      res = await http.get(Uri.parse(imageUrl));
+    } catch (e) {
+      return false;
+    }
+
+    if (res.statusCode != 200) return false;
+    Map<String, dynamic> data = res.headers;
+    return checkIfImage(data['content-type']);
+  }
+
+  static bool checkIfImage(String param) {
+    if (param == 'image/jpeg' || param == 'image/png' || param == 'image/gif') {
+      return true;
+    }
+    return false;
   }
 }
