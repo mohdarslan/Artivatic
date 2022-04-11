@@ -17,7 +17,7 @@ class AboutCanadaViewModel extends ChangeNotifier {
     _title = title;
   }
 
-  getCanadaDetails() async {
+  Future getCanadaDetails() async {
     try {
       _listAboutCanada = await API.getCanadaDetails(setTitle: setTitle);
       loadingStatus = LoadingStatus.COMPLETED;
@@ -25,6 +25,7 @@ class AboutCanadaViewModel extends ChangeNotifier {
       loadingStatus = LoadingStatus.ERROR;
     }
     notifyListeners();
+    return;
   }
 
   String get title => _title;
@@ -32,4 +33,6 @@ class AboutCanadaViewModel extends ChangeNotifier {
   String? rowTitle(int index) => _listAboutCanada[index].title;
   String? rowDescription(int index) => _listAboutCanada[index].description;
   String? rowImage(int index) => _listAboutCanada[index].imageHref;
+
+  int get length => _listAboutCanada.length;
 }
